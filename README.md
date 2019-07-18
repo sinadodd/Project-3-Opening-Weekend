@@ -25,6 +25,49 @@ Was reminded about OMDB (existence of) by old class activities.
     example:
     'Director': 'Ron Clements, John Musker, Don Hall(co-director), Chris Williams(co-director)'
 
-TMDB: Successfully did API calls using movie titles to get the movie ID, and then using movie ID to get all the info I want.
+TMDB: Using a couple movie titles for testing, successfully did API calls using movie titles to get the movie ID, and then using movie ID to get all the info I want.
 
 Converted xlsx from boxofficemojo to Pandas dataframe, removed unnecessary columns and cleaned up column names. Saved as new csv.
+
+### July 17 - 3 hours
+
+API calls using part of full data (50 movies instead of 2,090).
+rating, director(s), writer(s), approx. budget, runtime, genres
+
+Got movie IDs from movie titles. A few give errors so I am removing those for now and might bring them back in later.
+NOTE: consider coming back later to add "Production Companies" to the dataset. This can be found in the movie details API call.
+Got budget, genres and runtime from one API call.
+Got writing team, direction team, production team from one API call.
+Got movie rating (PG, R, etc) from one API call.
+
+Plan to go back to try to get the movies that caused errors when getting movie ID. These were due to format:
+Movie Title (YEAR)
+So I will remove the year suffix from movie titles, split the release date column into YYYY and MM-DD, and change my API calls to use year.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTE: consider coming back later to add "Production Companies" to the dataset. This can be found in the movie details API call.
