@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>At the Movies</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/d3Style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div style="background:rgba(21, 11, 82, 0.747) !important" class="col-md-12 jumbotron text-center">
+        <h1>At the Movies: Opening Weekend</h1>
+        <!-- <h2>Predicting box office results with machine learning</h2> -->
+        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well">
+          <h5>Upcoming</h5>
+          <select id="selEvent" onchange="eventChanged(this.value)"></select>
+        </div>
+        <hr>
+
+      </div>
+
+
+
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">$ 1,250,000</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Predicted Opening Weekend</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">$ 1,520,000</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Actual Opening Weekend</h6>
+              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">$ 870,000</h5>
+              <h6 class="card-subtitle mb-2 text-muted">Budget (approx)</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+        <img src="https://img.buzzfeed.com/buzzfeed-static/static/2018-05/9/13/asset/buzzfeed-prod-web-04/sub-buzz-599-1525887588-3.png?crop=1188%3A1180%3B0%2C0&downsize=400:*&output-format=auto&output-quality=auto" class="card-img-top" alt="...">
+        <div class="card-body">
+          <p class="card-text">Tagline</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Aug 15, 2019</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Opening Weekend</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">8,232</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Theaters</h6>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    </div>
+    
+  </div>
+
+  <div id="footer" style="background:rgba(21, 11, 82, 0.747) !important">
+    <p>Rosina Tao Dodd &copy; 2019</p>
+  </div>
+
+  <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+
+</body>
+
+</html>
