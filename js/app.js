@@ -1,5 +1,15 @@
-// id="upcoming" for list of upcoming releases
-// id = "poster" for poster image
+id="upcoming"
+id="poster"><
+id="title-info"
+title
+tagline
+summary
+id="direct"></div>
+<div id="produce"></div>
+  <div id="write"></div>
+  <div id="budget"></div>
+  <div id="runtime"></div>
+  <div id="genres"></div>
 
 
 function init() {
@@ -7,7 +17,7 @@ function init() {
 
 }
 
-function poster() {
+function single_movie() {
 
 
 }
