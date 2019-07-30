@@ -1,3 +1,7 @@
+
+@media (min-width: 768px) and (max-width: 991px) { ... }.
+Medium Sized Devices (e.g. Desktops) have a screen
+
 .iframeContainer {
   padding: 20px;
   border: 1px solid #e3e3e3;
@@ -9,26 +13,20 @@ html {
   min-height: 100%;
 }
 
-body {
-  /* Padding bottom by footer height */
-  padding-bottom: 80px;
-}
+
 
 ul {
   padding: 0;
   list-style-type: none;
 }
-
+/* 
 h2 {
   font-size: 13px;
-}
+} */
 
-h1 {
-  color: white;
-}
 
 #footer {
-  color: white;
+  color: rgb(255, 246, 221);
   position: absolute;
   bottom: 0;
   width: 100%; /* Set the fixed height of the footer here */
@@ -38,8 +36,33 @@ h1 {
   text-align: center;
   background-color: #f5f5f5;
 }
-
+/* 
 #footer p {
   margin: 0;
   font-size: 16px;
+} */
+
+
+.jumbotron h1{
+  color: rgb(0, 0, 0);
+  font-family: 'Limelight';
+  font-size: 50px;
+}
+
+.jumbotron {
+  padding: 35px;
+  background: rgb(255, 246, 221);
+  background-image: url('blank.png');
+  /* text-align: left; */
+  background-repeat: repeat-x;
+  min-width: 720px;
+}
+
+body {
+  background-color: rgb(65, 4, 4);
+  padding-bottom: 80px;
+}
+
+#upcoming-text {
+  color: rgb(255, 246,221);
 }

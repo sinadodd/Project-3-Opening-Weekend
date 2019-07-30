@@ -6,104 +6,325 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>At the Movies</title>
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="css/d3Style.css">
+  <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Limelight'>
+
 </head>
 
 <body>
+
   <div class="container">
+
     <div class="row">
-      <div style="background:rgba(21, 11, 82, 0.747) !important" class="col-md-12 jumbotron text-center">
-        <h1>At the Movies: Opening Weekend</h1>
-        <!-- <h2>Predicting box office results with machine learning</h2> -->
+      <div class="col-md-12 jumbotron text-center img">
+        <h1>AT THE MOVIES:<br>OPENING WEEKEND</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="well">
+        <h5 id="upcoming-text">Upcoming Releases</h5>
+        <div id="upcoming"></div>
+      </div>
+    </div>
+
+    <div class="item backdrop card">
+      <div class="image_content">
+        <a id="movie_384018" class="result" href="/movie/384018" title="Fast &amp; Furious Presents: Hobbs &amp; Shaw"
+          alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw">
+          <img class="backdrop fade lazyautosizes lazyloaded" data-sizes="auto"
+            data-src="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg"
+            data-srcset="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 1x, https://image.tmdb.org/t/p/w1000_and_h563_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 2x"
+            alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw" sizes="274px"
+            srcset="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 1x, https://image.tmdb.org/t/p/w1000_and_h563_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 2x"
+            src="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg">
+          <div class="meta" data-role="tooltip">
+          </div>
+        </a>
+      </div>
+      <div class="content">
+        <div class="wrapper">
+          <div class="consensus tight">
+            <div class="outer_ring">
+            </div>
+          </div>
+          <div class="flex">
+            <a id="movie_384018" class="title result" href="/movie/384018"
+              title="Fast &amp; Furious Presents: Hobbs &amp; Shaw"
+              alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw">Fast &amp; Furious Presents: Hobbs &amp; Shaw</a>
+            <span>August 2, 2019</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="row">
+
+        <div class="col-md-5">
+          <div id="poster"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Poster</h6>
+              <h5 class="card-title">Title and summary</h5>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-7">
+          <div id="title-info"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+              <h5 class="card-title">151 min</h5>
+            </div>
+          </div>
+        </div>
+  
         
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="well">
-          <h5>Upcoming</h5>
-          <select id="selEvent" onchange="eventChanged(this.value)"></select>
-        </div>
-        <hr>
 
+    <div class="row">
+
+        <div class="col-md-4">
+          <div id="direct"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Director</h6>
+              <h5 class="card-title">$160,000,000</h5>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-4">
+          <div id="produce"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Producer</h6>
+              <h5 class="card-title">151 min</h5>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-4">
+          <div id="write"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Writer</h6>
+              <h5 class="card-title">Action, Blahblah</h5>
+            </div>
+          </div>
+        </div>
+  
       </div>
 
 
 
-      
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">$ 1,250,000</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Predicted Opening Weekend</h6>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">$ 1,520,000</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Actual Opening Weekend</h6>
-              
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">$ 870,000</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Budget (approx)</h6>
-            </div>
-          </div>
-        </div>
-      </div>
-
     <div class="row">
+
       <div class="col-md-4">
+        <div id="budget"></div>
         <div class="card">
-        <img src="https://img.buzzfeed.com/buzzfeed-static/static/2018-05/9/13/asset/buzzfeed-prod-web-04/sub-buzz-599-1525887588-3.png?crop=1188%3A1180%3B0%2C0&downsize=400:*&output-format=auto&output-quality=auto" class="card-img-top" alt="...">
-        <div class="card-body">
-          <p class="card-text">Tagline</p>
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Budget</h6>
+            <h5 class="card-title">$160,000,000</h5>
+          </div>
         </div>
       </div>
+
+      <div class="col-md-4">
+        <div id="runtime"></div>
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div id="genres"></div>
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">Genres</h6>
+            <h5 class="card-title">Action, Blahblah</h5>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="col-md-4">
       <div class="card">
+
+        <h5 class="card-header mb-2 text-muted">Opening Weekend</h5>
         <div class="card-body">
-          <h5 class="card-title">Aug 15, 2019</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Opening Weekend</h6>
+          <h5 class="card-title">August 19, 2019</h5>
+
+          <div class="col-sm-12 card">
+            <h6 class="card-subtitle mb-2 text-muted">Predicted</h6>
+            <h5 class="card-title">$ 205,000,000</h5>
+          </div>
+          <div class="col-sm-12 card">
+            <h6 class="card-subtitle mb-2 text-muted">Actual</h6>
+            <h5 class="card-title">$105,000,000</h5>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">8,232</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Theaters</h6>
+
+
+    <div class="card-rows">
+
+        <div class="col-md-5">
+          <div id="poster"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Poster</h6>
+              <h5 class="card-title">Title and summary</h5>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-7">
+          <div id="title-info"></div>
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+              <h5 class="card-title">151 min</h5>
+            </div>
+          </div>
+        </div>
+  
+        
+      </div>
+
+
+
+
+    <div class="card-columns">
+        <div class="card bg-primary">
+            <div class="card-body text-center">
+              <p class="card-text">Some text inside the first card</p>
+              <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+              <h5 class="card-title">151 min</h5>
+            </div>
+          </div>
+          <div class="card bg-primary">
+              <div class="card-body text-center">
+                <p class="card-text">Some text inside the first card</p>
+                <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+                <h5 class="card-title">151 min</h5>
+              </div>
+            </div>
+            <div class="card bg-primary">
+                <div class="card-body text-center">
+                  <p class="card-text">Some text inside the first card</p>
+                  <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+                  <h5 class="card-title">151 min</h5>
+                </div>
+              </div>
+        <div class="card bg-warning">
+          <div class="card-body text-center">
+            <p class="card-text">Some text inside the second card</p>
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
+        </div>
+        <div class="card bg-success">
+          <div class="card-body text-center">
+            <p class="card-text">Some text inside the third card</p>
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
+        </div>
+        <div class="card bg-danger">
+          <div class="card-body text-center">
+            <p class="card-text">Some text inside the fourth card</p>
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
+        </div> 
+        <div class="card bg-light">
+          <div class="card-body text-center">
+            <p class="card-text">Some text inside the fifth card</p>
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
+        </div>
+        <div class="card bg-info">
+          <div class="card-body text-center">
+            <p class="card-text">Some text inside the sixth card</p>
+            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+            <h5 class="card-title">151 min</h5>
+          </div>
         </div>
       </div>
+
+      <div class="card-deck">
+
+          <div class="card bg-warning">
+            <div class="card-body text-center">
+              <p class="card-text">Some text inside the second card</p>
+            </div>
+          </div>
+          <div class="card bg-success">
+            <div class="card-body text-center">
+              <p class="card-text">Some text inside the third card</p>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="card-deck">
+            <div class="card bg-dark">
+                <div class="card-body text-center">
+                  <p class="card-text">Some text inside the first card</p>
+                </div>
+              </div>
+              <div class="card bg-primary">
+                  <div class="card-body text-center">
+                    <p class="card-text">Some text inside the first card</p>
+                  </div>
+                </div>
+                <div class="card bg-primary">
+                    <div class="card-body text-center">
+                      <p class="card-text">Some text inside the first card</p>
+                    </div>
+                  </div>
+            <div class="card bg-warning">
+              <div class="card-body text-center">
+                <p class="card-text">Some text inside the second card</p>
+              </div>
+            </div>
+            <div class="card bg-success">
+              <div class="card-body text-center">
+                <p class="card-text">Some text inside the third card</p>
+              </div>
+            </div>
+            <div class="card bg-danger">
+              <div class="card-body text-center">
+                <p class="card-text">Some text inside the fourth card</p>
+              </div>
+            </div> 
+          </div>
+
+
+  <!-- <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script> -->
+    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script> -->
+    <!-- <script type="text/javascript" src="js/app.js"></script> -->
+
+    <div id="footer" style="background:rgb(65, 4, 4) !important">
+      <p>Rosina Tao Dodd &copy; 2019</p>
     </div>
-
-    </div>
-
-    </div>
-    
-  </div>
-
-  <div id="footer" style="background:rgba(21, 11, 82, 0.747) !important">
-    <p>Rosina Tao Dodd &copy; 2019</p>
-  </div>
-
-  <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
-  <script type="text/javascript" src="js/app.js"></script>
 
 </body>
 
