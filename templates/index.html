@@ -32,99 +32,102 @@
 
     <br>
     <div id="movie-info" style="display: none;">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body" id="poster"></div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body" id="poster"></div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body" id="title-info"></div>
+          </div>
         </div>
       </div>
 
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body" id="title-info"></div>
+      <br>
+
+      <div class="row">
+        <div class="col-md-4 ">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Director</h6>
+              <h5 id="director" class="card-title text-center">Mrs. Director</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 ">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Producer</h6>
+              <h5 id="producer" class="card-title text-center">Dr. Producer</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 ">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Writer</h6>
+              <h5 id="writer" class="card-title text-center">Mr. Writer</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Budget</h6>
+              <h5 id="budget" class="card-title text-center">$test,000,000</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
+              <h5 id="runtime" class="card-title text-center">TEST min</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Genres</h6>
+              <h5 id="genres" class="card-title text-center">Genre1, Genre2</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <!-- USE THIS VERSION if only doing PREDICTIONS on upcoming/future movies. -->
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Release Date</h6>
+              <h5 id="release-date" class="card-title text-center">Febtobuary, 2019</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 border-danger">
+          <div class="card border-danger">
+            <h5 class="card-header border-danger text-center mb-2 text-muted">Opening Weekend Prediction</h5>
+            <h5 id="prediction" class="card-title text-center">$ 000,000,000</h5>
+          </div>
         </div>
       </div>
     </div>
-
-    <br>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Director</h6>
-            <h5 id="director" class="card-title text-center">Mrs. Director</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Producer</h6>
-            <h5 id="producer" class="card-title text-center">Dr. Producer</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Writer</h6>
-            <h5 id="writer" class="card-title text-center">Mr. Writer</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Budget</h6>
-            <h5 id="budget" class="card-title text-center">$test,000,000</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
-            <h5 id="runtime" class="card-title text-center">TEST min</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Genres</h6>
-            <h5 id="genres" class="card-title text-center">Genre1, Genre2</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br>
-    <!-- USE THIS VERSION if only doing PREDICTIONS on upcoming/future movies. -->
-    <div class="row justify-content-center">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">Release Date</h6>
-            <h5 id="release-date" class="card-title text-center">Febtobuary, 2019</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <h5 class="card-header text-center mb-2 text-muted">Opening Weekend Prediction</h5>
-          <h5 id="prediction" class="card-title text-center">$ 000,000,000</h5>
-        </div>
-      </div>
-    </div>
-  </div>
 
     <!-- USE THIS VERSION if past movies is working. This shows PREDICTION and ACTUAL. -->
     <!-- <div class="row justify-content-center">
