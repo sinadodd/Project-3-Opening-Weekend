@@ -10,7 +10,6 @@
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Limelight'>
-
 </head>
 
 <body>
@@ -23,65 +22,25 @@
       </div>
     </div>
 
-    <div id="upcoming">
+    <div class="row well">
+      <h5 id="upcoming-text">Blank Test Text</h5>
+    </div>
 
-      <div class="row">
-        <div class="well">
-          <h5 id="upcoming-text">Upcoming Releases</h5>
-
-        </div>
-      </div>
-
-      <div class="backdrop card">
-        <div class="image_content">
-          <a id="movie_384018" class="result" href="/movie/384018" title="Fast &amp; Furious Presents: Hobbs &amp; Shaw"
-            alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw">
-            <img class="backdrop fade lazyautosizes lazyloaded" data-sizes="auto"
-              data-src="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg"
-              data-srcset="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 1x, https://image.tmdb.org/t/p/w1000_and_h563_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 2x"
-              alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw" sizes="274px"
-              srcset="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 1x, https://image.tmdb.org/t/p/w1000_and_h563_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg 2x"
-              src="https://image.tmdb.org/t/p/w500_and_h282_face/fgPZgeqxDKIw86pBiAyLhh0vTrU.jpg">
-            <div class="meta" data-role="tooltip">
-            </div>
-          </a>
-        </div>
-        <div class="content">
-          <div class="wrapper">
-            <div class="consensus tight">
-              <div class="outer_ring">
-              </div>
-            </div>
-            <div class="flex">
-              <a id="movie_384018" class="title result" href="/movie/384018"
-                title="Fast &amp; Furious Presents: Hobbs &amp; Shaw"
-                alt="Fast &amp; Furious Presents: Hobbs &amp; Shaw">Fast &amp; Furious Presents: Hobbs &amp; Shaw</a>
-              <span>August 2, 2019</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div id="upcoming-movies">
     </div>
 
     <br>
+    <div id="movie-info" style="display: none;">
     <div class="row">
       <div class="col-md-4">
-        <div id="poster"></div>
         <div class="card">
-          <div class="card-body">
-            <img src="..." class="card-img-top" alt="...">
-          </div>
+          <div class="card-body" id="poster"></div>
         </div>
       </div>
 
       <div class="col-md-8">
-        <div id="title-info"></div>
         <div class="card">
-          <div class="card-body">
-            <h5 id="title" class="card-title">Title</h5>
-            <h6 id="tagline" class="card-subtitle mb-2 text-muted">Tagline</h6>
-            <p id="summary" class="card-text">Summary</p>
-          </div>
+          <div class="card-body" id="title-info"></div>
         </div>
       </div>
     </div>
@@ -89,97 +48,89 @@
     <br>
     <div class="row">
       <div class="col-md-4">
-        <div id="direct"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Director</h6>
-            <h5 class="card-title text-center">Michael Dodd</h5>
+            <h5 id="director" class="card-title text-center">Mrs. Director</h5>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div id="produce"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Producer</h6>
-            <h5 class="card-title text-center">Percy Mobius</h5>
+            <h5 id="producer" class="card-title text-center">Dr. Producer</h5>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div id="write"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Writer</h6>
-            <h5 class="card-title text-center">Rosina May</h5>
+            <h5 id="writer" class="card-title text-center">Mr. Writer</h5>
           </div>
         </div>
       </div>
     </div>
-
 
     <br>
     <div class="row">
       <div class="col-md-4">
-        <div id="budget"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Budget</h6>
-            <h5 class="card-title text-center">$160,000,000</h5>
+            <h5 id="budget" class="card-title text-center">$test,000,000</h5>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div id="runtime"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Runtime</h6>
-            <h5 class="card-title text-center">151 min</h5>
+            <h5 id="runtime" class="card-title text-center">TEST min</h5>
           </div>
         </div>
       </div>
 
       <div class="col-md-4">
-        <div id="genres"></div>
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Genres</h6>
-            <h5 class="card-title text-center">Action, Blahblah</h5>
+            <h5 id="genres" class="card-title text-center">Genre1, Genre2</h5>
           </div>
         </div>
       </div>
     </div>
 
     <br>
-    <!-- USE THIS VERSION if only doing upcoming/future movies. -->
+    <!-- USE THIS VERSION if only doing PREDICTIONS on upcoming/future movies. -->
     <div class="row justify-content-center">
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h6 class="card-subtitle mb-2 text-muted">Release Date</h6>
-            <h5 class="card-title text-center">August 8, 2019</h5>
+            <h5 id="release-date" class="card-title text-center">Febtobuary, 2019</h5>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card">
           <h5 class="card-header text-center mb-2 text-muted">Opening Weekend Prediction</h5>
-          <h5 class="card-title text-center">$ 205,000,000</h5>
-
+          <h5 id="prediction" class="card-title text-center">$ 000,000,000</h5>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- USE THIS VERSION if past movies is working. This shows Prediction and Actual. -->
+    <!-- USE THIS VERSION if past movies is working. This shows PREDICTION and ACTUAL. -->
     <!-- <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card">
           <h5 class="card-header mb-2 text-muted">Opening Weekend Box Office Results</h5>
           <div class="card-body">
-
             <div class="row justify-content-around">
               <div class="col-sm-4 card">
                 <h6 class="card-subtitle mb-2 text-muted">Predicted</h6>
@@ -195,23 +146,18 @@
       </div>
     </div> -->
 
-
-
-
-
-
-
-
-    <!-- <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script> -->
-    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script> -->
-    <!-- <script type="text/javascript" src="js/app.js"></script> -->
-
-    <div id="footer" style="background:rgb(65, 4, 4) !important">
-      <p>Rosina Tao Dodd &copy; 2019</p>
-    </div>
   </div>
+
+  <div id="footer" style="background:rgb(65, 4, 4) !important">
+    <p>Rosina Tao Dodd &copy; 2019</p>
+  </div>
+
+  <!-- <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script> -->
+  <script type="text/javascript" src="js/app.js"></script>
+
 </body>
 
 </html>
