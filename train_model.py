@@ -1,28 +1,31 @@
-import multiprocessing
 import time
-from multiprocessing import Lock
+import traceback
 
 import numpy as np
 import pandas as pd
 from keras import Sequential
 from keras.layers import Dense
+from requests import HTTPError, Response
 from sklearn.feature_extraction import FeatureHasher
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer, OneHotEncoder, MinMaxScaler
 
-from tmdb_api import load_tmdb_data_by_title
+from tmdb_api import get_tmdb_id_from_title, load_from_tmdb
 
 # Important filenames
 TRAINING_HELPERS_PICKLE = "Resources/03_helpers.pickle.gz"
 BOX_OFFICE_MOJO_XLS = "Resources/openingweekend_boxofficemojo.xlsx"
 OPENINGWEEKEND_PICKLE = "Resources/openingweekend.pickle.gz"
+OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE = "Resources/openingweekend_ids.pickle.gz"
 MERGED_PICKLE = "Resources/02_data_after_API_calls.pickle.gz"
-MERGE_ERRORS_PICKLE = "Resources/02_merge_errors.pickle.gz"
+MERGE_ERRORS_ID_PICKLE = "Resources/merge_errors_id.pickle.gz"
+MERGE_ERRORS_INFO_PICKLE = "Resources/merge_errors_info.pickle.gz"
 WITH_FEATURES_PICKLE = "Resources/03_new_df.pickle.gz"
 SEQUENTIAL_NN_MODEL_H5 = "Resources/sequential_nn_model.h5"
 NN_HELPERS_PICKLE = "Resources/nn_helpers.pickle.gz"
 NN_TRAIN_DATA_PICKLE = "Resources/nn_train_data.pickle.gz"
 NN_TEST_DATA_PICKLE = "Resources/nn_test_data.pickle.gz"
+
 
 def save_box_office_mojo_csv() -> None:
     """ Load the Box Office Mojo excel spreadsheet and rename/drop columns.
@@ -41,109 +44,153 @@ def save_box_office_mojo_csv() -> None:
     print(f"{OPENINGWEEKEND_PICKLE} done")
 
 
-global total_rows, processed_rows, start, report, error_count, lock, seen_titles, seen_ids, out_cols
-seen_titles = set()
-seen_ids = set()
-total_rows = 0
-processed_rows = 0
-start = 0
-report = 0
-error_count = 0
-lock = Lock()
-out_cols = []
-
-
-def process_chunk(df_chunk: pd.DataFrame) -> pd.DataFrame:
-    """ Process a chunk of the split Box Office Mojo data, merging in TMDB API data. """
-    global total_rows, processed_rows, start, report, error_count, lock, seen_ids, seen_titles, out_cols
-    out_data = []
-    for title, studio, opening, theaters, release_date in df_chunk.itertuples(index=False):
-        with lock:
-            processed_rows += 1
-            t = time.time()
-            if t > report:
-                elapsed = t - start
-                rate = processed_rows / elapsed
-                print(f"Processed {processed_rows}/{total_rows} in {elapsed:.1f}s ({rate:.2f}/s) - "
-                      f"{error_count} errors")
-                report += 5
-
-        errors = []
-        (tmdb_data, error) = load_tmdb_data_by_title(title, release_date.year)
-        if error:
-            errors.append(error)
-
-        row = [title, studio, opening, theaters, release_date,
-               tmdb_data.tmdb_id, tmdb_data.budget, tmdb_data.runtime,
-               tmdb_data.genres, tmdb_data.directors, tmdb_data.producers, tmdb_data.writers,
-               tmdb_data.rating]
-
-        with lock:
-            if title in seen_titles:
-                msg = f"Duplicate title {title}"
-                errors.append(msg)
-                print(msg)
-                seen_titles.add(title)
-
-            if tmdb_data.tmdb_id in seen_ids:
-                msg = f"Duplicate TMDB ID {tmdb_data.tmdb_id}"
-                errors.append(msg)
-                print(msg)
-            if tmdb_data.tmdb_id:
-                seen_ids.add(tmdb_data.tmdb_id)
-
-        e = "; ".join(errors) or None
-        row.append(e)
-        if e:
-            with lock:
-                error_count += 1
-
-        out_data.append(row)
-
-    return pd.DataFrame(out_data, columns=out_cols)
-
-
-def merge_tmdb_api_data() -> None:
-    """ Load the Box Office Mojo data and merge it with TMDB data via the TMDB API.
+def get_tmdb_ids() -> None:
+    """ Load the Box Office Mojo data and determine the TMDB ID for each entry.
     Save the result as a gzipped pickle file. """
     print(f"Loading pickle file {OPENINGWEEKEND_PICKLE}...")
     bom_df = pd.read_pickle(OPENINGWEEKEND_PICKLE)
     print("Done.")
 
-    global total_rows, processed_rows, start, report, error_count, lock, out_cols
     out_cols = [
         "Title", "Studio", "Opening", "Theaters", "Date",
-        "Movie ID", "Budget", "Runtime",
-        "Genres", "Directing", "Producing", "Writing",
-        "Rating",
-        "Drop Reason"
+        "Movie ID",
+        "Drop Reason",
     ]
 
+    seen_titles = set()
+    seen_ids = set()
     total_rows = len(bom_df.index)
     processed_rows = 0
     start = time.time()
     report = start + 5
     error_count = 0
-    lock = Lock()
 
-    num_partitions = 1 # Rate-limiting actually makes parallel processing slower...
-    df_split = np.array_split(bom_df, num_partitions)
-    print(f"Split for parallel processing: {[d.shape for d in df_split]}")
-    pool = multiprocessing.Pool(num_partitions)
-    print(f"Start parallel processing...")
-    df = pd.concat(pool.map(process_chunk, df_split))
-    pool.close()
-    print(f"Wait for jobs to complete...")
-    pool.join()
-    print(f"Done.")
+    out_data = []
+    for title, studio, opening, theaters, release_date in bom_df.itertuples(index=False):
+        errors = []
+        tmdb_id = None
+        processed_rows += 1
+        t = time.time()
+        if t > report:
+            elapsed = t - start
+            rate = processed_rows / elapsed
+            print(f"Processed {processed_rows}/{total_rows} in {elapsed:.1f}s ({rate:.2f}/s) - "
+                  f"{error_count} errors")
+            report += 5
 
-    print(f"Combined data {df.shape}")
+        if title in seen_titles:
+            errors.append(f"Duplicate title: {title}")
+        else:
+            seen_titles.add(title)
+
+        if not errors:
+            for retry in range(5):
+                try:
+                    tmdb_id = get_tmdb_id_from_title(title, release_date.year)
+                except HTTPError as e:
+                    if e.response.status_code == 429:
+                        response: Response = e.response
+                        wait = int(response.headers.get("Retry-After")) + 1
+                        print(f"Got HTTP 429; retrying in {wait} seconds...")
+                        time.sleep(wait)
+                        # Retry
+                        continue
+                    else:
+                        errors.append(str(e))
+                        # Don't retry
+                except Exception as e:
+                    traceback.print_exc()
+                    errors.append(str(e))
+                    # Don't retry
+                break
+            else:
+                # Retries exceeded
+                errors.append("Too many retries")
+
+        if tmdb_id:
+            if tmdb_id in seen_ids:
+                errors.append(f"Duplicate ID {tmdb_id} for title {title}")
+            else:
+                seen_ids.add(tmdb_id)
+
+        if not tmdb_id and not errors:
+            errors = ["No TMDB ID found"]
+
+        if errors:
+            print(f"{title}: {errors}")
+            error_count += 1
+
+        out_data.append([
+            title, studio, opening, theaters, release_date,
+            tmdb_id,
+            "; ".join(errors) or None
+        ])
+
+    with_tmdb_ids_df = pd.DataFrame(out_data, columns=out_cols)
+
+    print(f"Data with IDs: {with_tmdb_ids_df.shape} / errors: {with_tmdb_ids_df['Drop Reason'].count()}")
     print("Writing output files...")
-    df.to_pickle(MERGED_PICKLE)
-    print(f"{MERGED_PICKLE} done")
+    with_tmdb_ids_df[with_tmdb_ids_df["Drop Reason"].isnull()].to_pickle(OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE)
+    with_tmdb_ids_df[with_tmdb_ids_df["Drop Reason"].notnull()].to_pickle(MERGE_ERRORS_ID_PICKLE)
+    print("Done.")
 
-    df[df["Drop Reason"].notnull()].to_pickle(MERGE_ERRORS_PICKLE)
-    print(f"{MERGE_ERRORS_PICKLE} done")
+
+def get_tmdb_details() -> None:
+    """ Load the JSON details for each movie we have a TMDB ID for.
+    Save the result as a gzipped pickle file. """
+    print(f"Loading pickle file {OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE}...")
+    with_tmdb_ids_df = pd.read_pickle(OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE)
+    print("Done.")
+
+    out_cols = [
+        "Title", "Studio", "Opening", "Theaters", "Date",
+        "Movie ID",
+        "Drop Reason", "JSON",
+        "Budget", "Runtime",
+        "Genres", "Directing", "Producing", "Writing",
+        "Rating", "Keywords", "Studios",
+        "Raw Data",
+    ]
+
+    total_rows = len(with_tmdb_ids_df.index)
+
+    processed_rows = 0
+    start = time.time()
+    report = start + 5
+    error_count = 0
+
+    out_data = []
+    for title, studio, opening, theaters, release_date, tmdb_id, _ in with_tmdb_ids_df.itertuples(index=False):
+        processed_rows += 1
+        t = time.time()
+        if t > report:
+            elapsed = t - start
+            rate = processed_rows / elapsed
+            print(f"Processed {processed_rows}/{total_rows} in {elapsed:.1f}s ({rate:.2f}/s) - "
+                  f"{error_count} errors")
+            report += 5
+
+        (tmdb_data, error, json_resp) = load_from_tmdb(tmdb_id)
+
+        out_data.append([
+            title, studio, opening, theaters, release_date,
+            tmdb_id,
+            error, json_resp,
+            tmdb_data.budget, tmdb_data.runtime,
+            tmdb_data.genres, tmdb_data.directors, tmdb_data.producers, tmdb_data.writers,
+            tmdb_data.rating, tmdb_data.keywords, tmdb_data.studios,
+            tmdb_data
+        ])
+        if error:
+            error_count += 1
+
+    df = pd.DataFrame(out_data, columns=out_cols)
+
+    print(f"Combined data {df.shape} / errors: {df['Drop Reason'].count()}")
+    print("Writing output files...")
+    df[df["Drop Reason"].isnull()].to_pickle(MERGED_PICKLE)
+    df[df["Drop Reason"].notnull()].to_pickle(MERGE_ERRORS_INFO_PICKLE)
+    print(f"{MERGE_ERRORS_INFO_PICKLE} done")
 
 
 class TrainingHelpers:
@@ -153,7 +200,8 @@ class TrainingHelpers:
     directing_hasher: FeatureHasher
     producing_hasher: FeatureHasher
     writing_hasher: FeatureHasher
-    studio_onehot: OneHotEncoder
+    keywords_hasher: FeatureHasher
+    studio_mlb: MultiLabelBinarizer
     rating_onehot: OneHotEncoder
     month_onehot: OneHotEncoder
     day_onehot: OneHotEncoder
@@ -206,9 +254,16 @@ def create_features_from_merged_df() -> None:
     df = pd.concat([df.drop(columns="Writing"), writing_df], axis=1)
     print(f"Applied hasher for writing {df.shape}")
 
-    # Studio -> OneHotEncoder
-    helpers.studio_onehot = OneHotEncoder(dtype=np.int, categories="auto", sparse=False)
-    studio_matrix = helpers.studio_onehot.fit_transform(df["Studio"].values.reshape(-1, 1))
+    # Keywords -> FeatureHasher
+    helpers.keywords_hasher = FeatureHasher(n_features=256, input_type="string")
+    keywords_matrix = helpers.keywords_hasher.fit_transform(df["Keywords"])
+    keywords_df = pd.DataFrame(keywords_matrix.toarray()).add_prefix("Keyword_")
+    df = pd.concat([df.drop(columns="Keywords"), keywords_df], axis=1)
+    print(f"Applied hasher for keywords {df.shape}")
+
+    # Studio -> MultiLabelBinarizer
+    helpers.studio_mlb = MultiLabelBinarizer()
+    studio_matrix = helpers.studio_mlb.fit_transform(df["Studio"].values.reshape(-1, 1))
     df = pd.concat([df.drop(columns="Studio"), pd.DataFrame(studio_matrix).add_prefix("Studio_")], axis=1)
     print(f"Applied one-hot encoder for studio {df.shape}")
 
@@ -254,7 +309,7 @@ def train_nn_model() -> None:
     print("Done.")
 
     target = df["Opening"]
-    data = df.drop(columns=["Opening", "Movie ID", "Title"])
+    data = df.drop(columns=["Opening", "Movie ID", "Title", "Theaters", "Raw Data", "Studio", "JSON"])
     X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=42)
     print(f"Train/test split --> train x={X_train.shape}/y={y_train.shape}, test x={X_test.shape}/y={y_test.shape}")
 
@@ -273,7 +328,7 @@ def train_nn_model() -> None:
     nn_model.add(Dense(units=1, activation='linear'))
     print(nn_model.summary())
 
-    nn_model.compile(loss='mse', optimizer='adam', metrics=['mse','mae'])
+    nn_model.compile(loss='mse', optimizer='adam', metrics=['mse', 'mae'])
     nn_model.fit(
         X_train,
         y_train,
@@ -311,9 +366,11 @@ def print_column_groups():
 
 if __name__ == "__main__":
     # save_box_office_mojo_csv()
-    # This step takes ~50 minutes to complete due to API rate limiting
-    # merge_tmdb_api_data()
-    create_features_from_merged_df()
-    # This step takes a few minutes (~5) to complete currently
+    # ~12 minutes
+    # get_tmdb_ids()
+    # ~7 minutes
+    # get_tmdb_details()
+    # create_features_from_merged_df()
+    # ~5 minutesx
     train_nn_model()
     print_column_groups()

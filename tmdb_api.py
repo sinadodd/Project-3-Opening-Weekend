@@ -1,7 +1,8 @@
+import json
 import re
 import time
 import traceback
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import tmdbsimple as tmdb
 from requests import HTTPError, Response
@@ -10,18 +11,33 @@ import config
 
 tmdb.API_KEY = config.api_key
 
+DIRECTOR_JOBS = ['Director']
+PRODUCER_JOBS = ['Producer', 'Executive Producer', 'Co-Producer', 'Co-Executive Producer']
+WRITER_JOBS = ['Writer', 'Co-Writer', 'Screenplay', 'Story', 'Adaptation', 'Author', 'Comic Book', 'Novel',
+               'Original Story']
+
 
 class InputSample:
 
     def __init__(self, tmdb_id):
         self.tmdb_id = tmdb_id
 
+    def to_json(self):
+        return self.__dict__.copy()
+
     tmdb_id: int
+    actual_opening: int = None
+    predicted_opening: float = None
+
     poster_url: str = None
+    backdrop_url: str = None
+    tagline: str = None
+    release_date: str = None
+    title: str = None
 
     # Features:
     # theaters: number of theaters released to
-    theaters: int = None
+    # theaters: int = None
     # budget: movie budget in USD
     budget: int = None
     # runtime: movie run length in minutes
@@ -34,43 +50,70 @@ class InputSample:
     producers: List[str] = None
     # writer: array of writer names
     writers: List[str] = None
-    # studio: name of studio
-    studio: str = None
+    # studio: name of production companies
+    studios: List[str] = None
     # rating: MPAA picture rating
     rating: str = None
     # month: month of release 1-12
     month: int = None
     # day: day of month of release 1-31
     day: int = None
+    # keywords
+    keywords: List[str] = None
 
 
-def load_from_tmdb(tmdb_id: int) -> (Optional[InputSample], Optional[str]):
-    err = []
+def load_from_tmdb(tmdb_id: int) -> (Optional[InputSample], Optional[str], str):
     movie = tmdb.Movies(tmdb_id)
+    movie_data = movie.info(append_to_response="releases,credits,keywords")
+    return parse_json(tmdb_id, movie_data) + (json.dumps(movie_data),)
+
+
+def parse_json(tmdb_id: int, movie_data: Dict) -> (Optional[InputSample], Optional[str]):
+    err = []
     ret = InputSample(tmdb_id=tmdb_id)
 
-    movie.info()
-    ret.budget = movie.budget
-    ret.runtime = movie.runtime
-    ret.genres = [g['name'] for g in movie.genres]
-    ret.studio = 'BV'  # TODO
-    ret.theaters = 0  # TODO
+    ret.poster_url = f"https://image.tmdb.org/t/p/original{movie_data['poster_path']}" if 'poster_path' in movie_data else None
+    ret.backdrop_url = f"https://image.tmdb.org/t/p/original{movie_data['backdrop_path']}" if 'backdrop_path' in movie_data else None
 
-    movie.releases()
-    for c in movie.countries:
-        if c['iso_3166_1'] == 'US':
-            ret.rating = c['certification']
-            (_, month, day) = c['release_date'].split("-")
-            ret.month = int(month)
-            ret.day = int(day)
-            break
-    else:
-        err += [f"No US release for TMDB ID {tmdb_id}"]
+    ret.release_date = movie_data['release_date']
+    ret.title = movie_data['title']
 
-    movie.credits()
-    ret.directors = [c['name'] for c in movie.crew if c['department'] == 'Directing']
-    ret.producers = [c['name'] for c in movie.crew if c['department'] == 'Production']
-    ret.writers = [c['name'] for c in movie.crew if c['department'] == 'Writing']
+    if 'runtime' in movie_data:
+        ret.runtime = movie_data['runtime']
+
+    if 'budget' in movie_data:
+        ret.budget = movie_data['budget']
+
+    if 'genres' in movie_data:
+        ret.genres = [g['name'] for g in movie_data['genres']]
+
+    if 'tagline' in movie_data:
+        ret.tagline = movie_data['tagline']
+
+    if 'keywords' in movie_data:
+        ret.keywords = [k['name'] for k in movie_data['keywords']['keywords']]
+
+    if 'releases' in movie_data:
+        for c in movie_data['releases']['countries']:
+            if c['iso_3166_1'] == 'US':
+                ret.rating = c['certification']
+                (_, month, day) = c['release_date'].split("-")
+                ret.month = int(month)
+                ret.day = int(day)
+                break
+        else:
+            err += [f"No US release for TMDB ID {tmdb_id}"]
+
+    if 'production_companies' in movie_data:
+        ret.studios = [c['name'] for c in movie_data['production_companies']]
+
+    if 'credits' in movie_data:
+        ret.directors = [c['name'] for c in movie_data['credits']['crew']
+                         if c['department'] == 'Directing' and c['job'] in DIRECTOR_JOBS]
+        ret.producers = [c['name'] for c in movie_data['credits']['crew']
+                         if c['department'] == 'Production' and c['job'] in PRODUCER_JOBS]
+        ret.writers = [c['name'] for c in movie_data['credits']['crew']
+                       if c['department'] == 'Writing' and c['job'] in WRITER_JOBS]
 
     return ret, ("; ".join(err) or None)
 
@@ -123,7 +166,7 @@ def get_tmdb_id_from_title(title: str, year: int = None) -> Optional[int]:
     return exact_title_matches[0]['id']
 
 
-def load_tmdb_data_by_title(title: str, year: int = None) -> (InputSample, Optional[str]):
+def load_tmdb_data_by_title(title: str, year: int = None) -> (InputSample, Optional[str], str):
     while True:
         try:
             tmdb_id = get_tmdb_id_from_title(title, year)
@@ -138,7 +181,12 @@ def load_tmdb_data_by_title(title: str, year: int = None) -> (InputSample, Optio
         except Exception as e:
             traceback.print_exc()
             # Don't retry
-            return InputSample(0), str(e)
+            return InputSample(0), str(e), None
+
+
+def get_upcoming() -> List[InputSample]:
+    resp = tmdb.Movies().upcoming(language="en-US")
+    return [parse_json(r['id'], r)[0] for r in resp['results']]
 
 
 if __name__ == "__main__":
