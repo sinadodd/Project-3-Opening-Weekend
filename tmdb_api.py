@@ -34,6 +34,7 @@ class InputSample:
     tagline: str = None
     release_date: str = None
     title: str = None
+    overview: str = None
 
     # Features:
     # theaters: number of theaters released to
@@ -77,6 +78,7 @@ def parse_json(tmdb_id: int, movie_data: Dict) -> (Optional[InputSample], Option
 
     ret.release_date = movie_data['release_date']
     ret.title = movie_data['title']
+    ret.overview = movie_data['overview']
 
     if 'runtime' in movie_data:
         ret.runtime = movie_data['runtime']

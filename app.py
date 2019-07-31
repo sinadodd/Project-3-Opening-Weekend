@@ -6,7 +6,7 @@ import tmdb_api
 import train_model
 
 # Create an instance of Flask
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 
 known_movies_df: pd.DataFrame = pd.read_pickle(train_model.OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE)
 known_movies_df.set_index("Movie ID", inplace=True, drop=False)
@@ -22,29 +22,15 @@ def home():
 def upcoming():
     return jsonify([s.__dict__ for s in tmdb_api.get_upcoming()])
 
-
-@app.route("/info/<int:tmdb_id>")
-def info(tmdb_id):
-    (s, err, json) = tmdb_api.load_from_tmdb(tmdb_id)
-    s.predicted_opening = None
-    s.actual_opening = None
-    try:
-        s.actual_opening = float(known_movies_df.loc[tmdb_id, "Opening"])
-    except KeyError:
-        pass
-
-    return jsonify(s.__dict__)
-
-
 @app.route("/predict/<int:tmdb_id>")
 def predict(tmdb_id):
     (s, err, json) = tmdb_api.load_from_tmdb(tmdb_id)
 
     s.actual_opening = None
-    # try:
-    #     s.actual_opening = int(known_movies_df.loc[tmdb_id, "Opening"])
-    # except KeyError:
-    #     pass
+    try:
+        s.actual_opening = int(known_movies_df.loc[tmdb_id, "Opening"])
+    except KeyError:
+        pass
 
     s.predicted_opening = None
     # s.predicted_opening = float(predict_input.predict_for_input(s))
