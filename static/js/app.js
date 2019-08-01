@@ -37,6 +37,9 @@ function movie_data(tmdb_id) {
     d3.select("#writer")
       .html(data.writers.join(", "));
 
+    d3.select("#cast")
+      .html(data.cast.join(", "));
+
     d3.select("#budget")
       .html(`$${thousands_separators(data.budget)}`);
 
