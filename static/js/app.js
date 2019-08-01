@@ -102,45 +102,45 @@ function movie_data(tmdb_id) {
   d3.json(`/predict/${tmdb_id}`).then(data => {
 
     d3.select("#poster")
-      .html(`<img src='${data.poster_url}' class='card-img-top'>`)
+      .html(`<img src='${data.poster_url}' class='card-img-top'>`);
 
     d3.select("#title-info")
       .html(`
     <h5 id="title" class="card-title">${data.title}</h5>
     <h6 id="tagline" class="card-subtitle mb-2 text-muted">${data.tagline}</h6>
-    <p id="summary" class="card-text">${data.overview}</p>`)
+    <p id="summary" class="card-text">${data.overview}</p>`);
 
     d3.select("#director")
-      .html(data.directors.join(", "))
+      .html(data.directors.join(", "));
 
     d3.select("#producer")
-      .html(data.producers.join(", "))
+      .html(data.producers.join(", "));
 
     d3.select("#writer")
-      .html(data.writers.join(", "))
+      .html(data.writers.join(", "));
 
     d3.select("#budget")
-      .html(`$${thousands_separators(data.budget)}`)
+      .html(`$${thousands_separators(data.budget)}`);
 
     d3.select("#runtime")
-      .html(`${data.runtime} min`)
+      .html(`${data.runtime} min`);
 
     d3.select("#genres")
-      .html(data.genres.join(", "))
+      .html(data.genres.join(", "));
 
-    var reldate = new Date(data.release_date)
+    var reldate = new Date(data.release_date);
     console.log(reldate);
 
     var options = { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
     var release_date = reldate.toLocaleDateString("en-US", options);
 
     d3.select("#release-date")
-      .html(release_date)
+      .html(release_date);
 
     d3.select("#prediction")
-      .html(d => {
-        if (d > 0) { `$${thousands_separators(data.predicted_opening)}` }
-        else { "Unknown" }
+      .html(() => {
+        if (data.predicted_opening > 0) { return `$${thousands_separators(data.predicted_opening)}` }
+        else { return "Unknown" }
       });
 
     d3.select("#movie-info").style("display", "block");

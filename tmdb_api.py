@@ -12,9 +12,8 @@ import config
 tmdb.API_KEY = config.api_key
 
 DIRECTOR_JOBS = ['Director']
-PRODUCER_JOBS = ['Producer', 'Executive Producer', 'Co-Producer', 'Co-Executive Producer']
-WRITER_JOBS = ['Writer', 'Co-Writer', 'Screenplay', 'Story', 'Adaptation', 'Author', 'Comic Book', 'Novel',
-               'Original Story']
+PRODUCER_JOBS = ['Producer', 'Executive Producer']
+WRITER_JOBS = ['Writer', 'Screenplay', 'Adaptation', 'Original Story']
 
 
 class InputSample:
@@ -51,6 +50,8 @@ class InputSample:
     producers: List[str] = None
     # writer: array of writer names
     writers: List[str] = None
+    # cast: array of up to 10 top-billed cast in credits order
+    cast: List[str] = None
     # studio: name of production companies
     studios: List[str] = None
     # rating: MPAA picture rating
@@ -116,6 +117,8 @@ def parse_json(tmdb_id: int, movie_data: Dict) -> (Optional[InputSample], Option
                          if c['department'] == 'Production' and c['job'] in PRODUCER_JOBS]
         ret.writers = [c['name'] for c in movie_data['credits']['crew']
                        if c['department'] == 'Writing' and c['job'] in WRITER_JOBS]
+        ret.cast = [c['name'] for c in movie_data['credits']['cast']
+                        if c['order'] < 10][0:10]
 
     return ret, ("; ".join(err) or None)
 

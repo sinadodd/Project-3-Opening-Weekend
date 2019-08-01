@@ -1,15 +1,13 @@
-import pandas as pd
-from flask import Flask, render_template, jsonify
+import traceback
 
-# import predict_input
+import predict_input
 import tmdb_api
-import train_model
+
+from flask import Flask, render_template, jsonify
 
 # Create an instance of Flask
 app = Flask(__name__, static_url_path="")
-
-known_movies_df: pd.DataFrame = pd.read_pickle(train_model.OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE)
-known_movies_df.set_index("Movie ID", inplace=True, drop=False)
+predict_input.init()
 
 # Route to render index.html template
 @app.route("/")
@@ -22,21 +20,25 @@ def home():
 def upcoming():
     return jsonify([s.__dict__ for s in tmdb_api.get_upcoming()])
 
+
 @app.route("/predict/<int:tmdb_id>")
 def predict(tmdb_id):
     (s, err, json) = tmdb_api.load_from_tmdb(tmdb_id)
 
     s.actual_opening = None
     try:
-        s.actual_opening = int(known_movies_df.loc[tmdb_id, "Opening"])
+        s.actual_opening = predict_input.get_actual_opening(tmdb_id)
     except KeyError:
         pass
 
     s.predicted_opening = None
-    # s.predicted_opening = float(predict_input.predict_for_input(s))
+    try:
+        s.predicted_opening = float(predict_input.predict_for_input(s))
+    except Exception as e:
+        traceback.print_exc()
 
     return jsonify(s.__dict__)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
