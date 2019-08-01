@@ -10,7 +10,6 @@ __pycache__/
 /Resources/03a_merge_errors_json.pickle.gz
 /Resources/04_parsed_json.pickle.gz
 /Resources/05_features.pickle.gz
-/Resources/05_training_helpers.pickle.gz
 /Resources/06_nn_model_fit_history.pickle.gz
 /Resources/06_nn_test_data.pickle.gz
 /Resources/06_nn_train_data.pickle.gz
