@@ -16,22 +16,23 @@ from helpers import ScalingHelpers, TrainingHelpers
 from tmdb_api import get_tmdb_id_from_title, load_from_tmdb, parse_json
 
 # Important filenames
-BOX_OFFICE_MOJO_XLS = "Resources/openingweekend_boxofficemojo.xlsx"
-OPENINGWEEKEND_PICKLE = "Resources/openingweekend.pickle.gz"
-OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE = "Resources/openingweekend_ids.pickle.gz"
-MERGED_JSON_PICKLE = "Resources/tmdb_json.pickle.gz"
-MERGE_ERRORS_ID_PICKLE = "Resources/merge_errors_id.pickle.gz"
-MERGE_ERRORS_JSON_PICKLE = "Resources/merge_errors_json.pickle.gz"
-PARSED_JSON_PICKLE = "Resources/parsed_json.pickle.gz"
-FEATURES_PICKLE = "Resources/features.pickle.gz"
-SEQUENTIAL_NN_MODEL_H5 = "Resources/sequential_nn_model.h5"
-TRAINING_HELPERS_PICKLE = "Resources/training_helpers.pickle.gz"
-NN_HELPERS_PICKLE = "Resources/nn_helpers.pickle.gz"
-NN_TRAIN_DATA_PICKLE = "Resources/nn_train_data.pickle.gz"
-NN_TEST_DATA_PICKLE = "Resources/nn_test_data.pickle.gz"
+BOX_OFFICE_MOJO_XLS = "Resources/00_openingweekend_boxofficemojo.xlsx"
+OPENINGWEEKEND_PICKLE = "Resources/01_openingweekend.pickle.gz"
+OPENINGWEEKEND_WITH_TMDB_IDS_PICKLE = "Resources/02_openingweekend_ids.pickle.gz"
+MERGE_ERRORS_ID_PICKLE = "Resources/02a_merge_errors_id.pickle.gz"
+MERGED_JSON_PICKLE = "Resources/03_tmdb_json.pickle.gz"
+MERGE_ERRORS_JSON_PICKLE = "Resources/03a_merge_errors_json.pickle.gz"
+PARSED_JSON_PICKLE = "Resources/04_parsed_json.pickle.gz"
+FEATURES_PICKLE = "Resources/05_features.pickle.gz"
+TRAINING_HELPERS_PICKLE = "Resources/05_training_helpers.pickle.gz"
+SEQUENTIAL_NN_MODEL_H5 = "Resources/06_nn_sequential_model.h5"
+NN_FIT_HISTORY_PICKLE = "Resources/06_nn_model_fit_history.pickle.gz"
+NN_HELPERS_PICKLE = "Resources/06_nn_helpers.pickle.gz"
+NN_TRAIN_DATA_PICKLE = "Resources/06_nn_train_data.pickle.gz"
+NN_TEST_DATA_PICKLE = "Resources/06_nn_test_data.pickle.gz"
 
 
-def save_box_office_mojo_csv() -> None:
+def process_box_office_mojo_xls() -> None:
     """ Load the Box Office Mojo excel spreadsheet and rename/drop columns.
     Save the result as a gzipped pickle file. """
     start = time.time()
@@ -226,7 +227,7 @@ def parse_json_responses() -> None:
     print(f"parse_json_responses: {time.time() - start:.1f}s")
 
 
-def create_features_from_merged_df() -> None:
+def create_features() -> None:
     """ Transform the combined input data into features useful for ML algorithms.
     Save the result as a gzipped pickle file. """
     start = time.time()
@@ -377,11 +378,11 @@ def train_nn_model() -> None:
         X_train,
         y_train,
         validation_data=(X_test, y_test),
-        epochs=50,
+        epochs=300,
         shuffle=False,
         verbose=2
     )
-    pd.to_pickle(history, "Resources/nn_model_fit_history.pickle.gz")
+    pd.to_pickle(history, NN_FIT_HISTORY_PICKLE)
 
     print(nn_model.evaluate(X_test, y_test, verbose=2))
     print(f"Saving model to {SEQUENTIAL_NN_MODEL_H5}")
@@ -407,13 +408,13 @@ def print_column_groups():
 
 
 if __name__ == "__main__":
-    # save_box_office_mojo_csv()
+    # process_box_office_mojo_xls()
     # ~12 minutes
-    # get_tmdb_ids()
+    get_tmdb_ids()
     # ~20? minutes
-    # get_tmdb_json()
+    get_tmdb_json()
     # parse_json_responses()
-    create_features_from_merged_df()
+    create_features()
     # ~2 minutes
     train_nn_model()
     print_column_groups()
